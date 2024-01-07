@@ -1,0 +1,105 @@
+version: '3.8'
+
+services:
+  api-dev:
+    container_name: api-dev
+    build:
+      context: ./
+    ports:
+      - "8001:5000"
+    
+    environment:
+      HOST: db-dev
+      DB_USER: admin
+      DB_PASS: db4dev$
+      DB_PORT: 3306
+      DB: db
+    
+    networks:
+      - dev_network
+
+  db-dev:
+    image: mysql:latest
+    container_name: mysql_db_dev
+    restart: always
+    volumes:
+      - dev_db:/var/lib/mysql
+    environment:
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: db4dev$
+      MYSQL_ROOT_PASSWORD: db4dev$
+      MYSQL_DATABASE: db
+    ports:
+      - "3306:3306"
+    networks:
+      - dev_network
+
+  phpmyadmin:
+    depends_on:
+      - db-dev
+    container_name: myadmin_dev
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: db-dev
+      PMA_USER: admin
+      PMA_PASSWORD: db4dev$
+    ports:
+      - "5050:80"
+    networks:
+      - dev_network
+
+  api-test:
+      container_name: api-test
+      build:
+        context: ./
+      ports:
+        - "8002:5000"
+      
+      environment:
+        HOST: db-test
+        DB_USER: admin
+        DB_PASS: db4test$
+        DB: db
+      
+      networks:
+        - dev_network
+
+  db-test:
+    image: mysql:latest
+    container_name: mysql_db_test
+    restart: always
+    volumes:
+      - test_db:/var/lib/mysql
+    environment:
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: db4test$
+      MYSQL_ROOT_PASSWORD: db4test$
+      MYSQL_DATABASE: db
+    ports:
+      - "3307:3306"
+    networks:
+      - dev_network
+
+  phpmyadmin-test:
+    depends_on:
+      - db-test
+    container_name: myadmin_test
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: db-test
+      PMA_USER: admin
+      PMA_PASSWORD: db4test$
+    ports:
+      - "5051:80"
+    networks:
+      - dev_network
+
+
+networks:
+  dev_network:
+
+volumes:
+  dev_db:
+  test_db:

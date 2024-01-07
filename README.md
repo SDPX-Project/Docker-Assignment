@@ -22,4 +22,4 @@ docker compose up -d
 
 - **api test**
   - **api** [http://localhost:8001](htpp//localhost:8001)
-  - **phpmyadmin** [htpp://localhost:5050](htpp://localhost:5051)
+  - **phpmyadmin** [htpp://localhost:5051](htpp://localhost:5051)
